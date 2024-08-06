@@ -1,0 +1,124 @@
+CREATE TABLE tbCliente(
+  idCliente INT PRIMARY KEY AUTO_INCREMENT
+    ,nomeCliente VARCHAR(100) NOT NULL
+    ,cpfCliente CHAR(14) UNIQUE NOT NULL
+    ,cnsCliente VARCHAR(16) UNIQUE NOT NULL
+    ,emailCliente VARCHAR(100) NOT NULL
+    ,senhaCliente VARCHAR (50) UNIQUE NOT NULL
+    ,userCliente VARCHAR(30) NOT NULL
+    ,rgCliente CHAR(20) UNIQUE NOT NULL
+    ,cepCliente CHAR(10) NOT NULL
+    ,logradouroCliente VARCHAR(50) NOT NULL
+    ,numeroCliente VARCHAR (06) NOT NULL
+    ,complementoCliente VARCHAR (30) NOT NULL
+    ,bairroCliente VARCHAR(50) NOT NULL
+    ,estadoCliente VARCHAR(20) NOT NULL
+    ,ufCliente VARCHAR (04) NOT NULL
+    ,cidadeCliente VARCHAR(25) NOT NULL
+);
+
+CREATE TABLE tbTipoMedicamento (
+    idTipoMedicamento INT PRIMARY KEY AUTO_INCREMENT
+  	,tipoMedicamento VARCHAR (50) NOT NULL
+);
+
+CREATE TABLE tbMedicamento(
+    idMedicamento INT PRIMARY KEY AUTO_INCREMENT,
+    idTipoMedicamento INT, FOREIGN KEY(idTipoMedicamento) REFERENCES tbTipoMedicamento(idTipoMedicamento),
+    nomeMedicamento VARCHAR(100) NOT NULL,
+    nomeGenericoMedicamento VARCHAR(100) NOT NULL,
+    codigoDeBarrasMedicamento VARCHAR(15) UNIQUE NOT NULL,
+    validadeMedicamento DATE NOT NULL,
+    loteMedicamento CHAR(10) NOT NULL,
+    fabricacaoMedicamento DATE NOT NULL,
+    dosagemMedicamento VARCHAR(50) NOT NULL,
+    formaFarmaceuticaMedicamento CHAR(15) NOT NULL,
+    fabricanteMedicamento VARCHAR(50) NOT NULL,
+    quantMedicamento SMALLINT NOT NULL,
+    composicaoMedicamento VARCHAR(200) NOT NULL
+    
+    
+);
+
+CREATE TABLE tbRegiao(
+    idRegiao INT PRIMARY KEY AUTO_INCREMENT,
+    nomeRegiao VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE tbTipoFarmacia(
+    idTipoFarmacia INT PRIMARY KEY AUTO_INCREMENT,
+    tipoFarmacia VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE tbTelefone(
+    idTelefone INT PRIMARY KEY AUTO_INCREMENT,
+    numeroTelefone CHAR(11) NOT NULL
+);
+
+CREATE TABLE tbFarmacia(
+    idFarmacia INT PRIMARY KEY AUTO_INCREMENT,
+    cnpjFarmacia CHAR(18) NOT NULL,
+    geolocalizacaoFarmacia VARCHAR(50) NOT NULL,
+    cepFarmacia CHAR(10) NOT NULL,
+    logradouroFarmacia VARCHAR(50) NOT NULL,
+    bairroFarmacia VARCHAR(50) NOT NULL,
+    numeroFarmacia VARCHAR(6) NOT NULL,
+    complementoFarmacia VARCHAR(30) NOT NULL,
+    estadoFarmacia VARCHAR(20) NOT NULL,
+    ufFarmacia CHAR(2) NOT NULL,
+    cidadeFarmacia VARCHAR(25) NOT NULL,
+    emailFarmacia VARCHAR(100) UNIQUE NOT NULL,
+    idRegiao INT,
+    FOREIGN KEY(idRegiao) REFERENCES tbRegiao(idRegiao),
+    idTipoFarmacia INT, FOREIGN KEY(idTipoFarmacia) REFERENCES tbTipoFarmacia(idTipoFarmacia)
+);
+
+CREATE TABLE tbMedicamentoSalvo (
+    idMedicamentoSalvo INT PRIMARY KEY AUTO_INCREMENT,
+    idMedicamento INT,
+    FOREIGN KEY(idMedicamento) REFERENCES tbMedicamento(idMedicamento)
+);
+
+CREATE TABLE tbFavoritos (
+    idFavoritos INT PRIMARY KEY AUTO_INCREMENT,
+    idFarmacia INT,
+    FOREIGN KEY(idFarmacia) REFERENCES tbFarmacia(idFarmacia),
+    idMedicamentoSalvo INT,
+    FOREIGN KEY(idMedicamentoSalvo) REFERENCES tbMedicamentoSalvo(idMedicamentoSalvo)
+);
+
+CREATE TABLE tbContato(
+    idContato INT PRIMARY KEY AUTO_INCREMENT,
+    idFarmacia INT,
+    FOREIGN KEY(idFarmacia) REFERENCES tbFarmacia(idFarmacia),
+    idTelefone INT,
+    FOREIGN KEY(idTelefone) REFERENCES tbTelefone(idTelefone)
+);
+
+CREATE TABLE tbComentarios(
+    idComentarios INT PRIMARY KEY AUTO_INCREMENT,
+    comentario VARCHAR(100) NOT NULL,
+    idCliente INT,
+    FOREIGN KEY(idCliente) REFERENCES tbCliente(idCliente)
+);
+
+CREATE TABLE tbNotificacaoComentario (
+    idNotificacaoComentario INT PRIMARY KEY AUTO_INCREMENT,
+    idComentarios INT,
+    FOREIGN KEY(idComentarios) REFERENCES tbComentarios(idComentarios)
+);
+
+CREATE TABLE tbEstoque (
+    idEstoque INT PRIMARY KEY AUTO_INCREMENT,
+    quantEstoque INT NOT NULL,
+    idMedicamento INT,
+    FOREIGN KEY(idMedicamento) REFERENCES tbMedicamento(idMedicamento),
+    idFarmacia INT,
+    FOREIGN KEY(idFarmacia) REFERENCES tbFarmacia(idFarmacia)
+);
+
+CREATE TABLE tbNotificacaoEstoque (
+    idNotificacaoEstoque INT PRIMARY KEY AUTO_INCREMENT,
+    idEstoque INT,
+    FOREIGN KEY(idEstoque) REFERENCES tbEstoque(idEstoque)
+);
